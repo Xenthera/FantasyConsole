@@ -1,10 +1,10 @@
-import java
+import random
 
 count = 0
+i = 0
 
-while(True):
-    count += 1
-    java.lang.Thread.sleep(1000/10)
-    GPU.clear(15)
+GPU.clear(13)
+for i in range(20):
+
     GPU.setColor(3)
-    GPU.drawCircle(count,count, 10)
+    GPU.drawCircle(random.randint(0,100),random.randint(0,100), 10)

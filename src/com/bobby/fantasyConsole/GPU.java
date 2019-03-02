@@ -18,22 +18,17 @@ public class GPU {
 
 
 	
-	public void clear(int color) throws InterruptedException {
+	public void clear(int color){
 		GPU gpu = this;
-		synchronized (LinkedTaskMachine.queue) {
-			LinkedTaskMachine.queue.add(new ITask() {
-				@Override
-				public void execute() {
-					gpu.setColor(color);
-					for (int i = 0; i < gpu.canvas.getWidth(); i++) {
-						for (int j = 0; j < gpu.canvas.getHeight(); j++) {
 
-							gpu._drawPixel(i, j);
-						}
-					}
-				}
-			});
+		gpu.setColor(color);
+		for (int i = 0; i < gpu.canvas.getWidth(); i++) {
+			for (int j = 0; j < gpu.canvas.getHeight(); j++) {
+
+				gpu._drawPixel(i, j);
+			}
 		}
+
 	}
 
 	private void printChar(int x, int y, int character){
@@ -74,17 +69,10 @@ public class GPU {
 	}
 
 	public void drawPixel(int x, int y){
-
 		GPU gpu = this;
-		LinkedTaskMachine.queue.add(new ITask() {
-			@Override
-			public void execute() {
-				if(x >= 0 && x < gpu.canvas.getWidth() && y >= 0 && y < gpu.canvas.getHeight()){
-					gpu.canvas.setRGB(x, y, gpu.pallette.get(gpu.currentColor).getRGB());
-				}
-			}
-		});
-
+		if(x >= 0 && x < gpu.canvas.getWidth() && y >= 0 && y < gpu.canvas.getHeight()){
+			gpu.canvas.setRGB(x, y, gpu.pallette.get(gpu.currentColor).getRGB());
+		}
 	}
 	
 	public void drawPixel(int x, int y, int color){
@@ -167,27 +155,24 @@ public class GPU {
 	public void drawCircle(int xc, int yc, int r){
 
 			GPU gpu = this;
-			LinkedTaskMachine.queue.add(new ITask() {
-				@Override
-				public void execute() {
-					int x = 0;
-					int y = r;
-					int p = 3 - 2 * r;
 
-					while (y >= x) {
-						_drawPixel(xc - x, yc - y);
-						_drawPixel(xc - y, yc - x);
-						_drawPixel(xc + y, yc - x);
-						_drawPixel(xc + x, yc - y);
-						_drawPixel(xc - x, yc + y);
-						_drawPixel(xc - y, yc + x);
-						_drawPixel(xc + y, yc + x);
-						_drawPixel(xc + x, yc + y);
-						if (p < 0) p += 4 * x++ + 6;
-						else p += 4 * (x++ - y--) + 10;
-					}
-				}
-			});
+			int x = 0;
+			int y = r;
+			int p = 3 - 2 * r;
+
+			while (y >= x) {
+				_drawPixel(xc - x, yc - y);
+				_drawPixel(xc - y, yc - x);
+				_drawPixel(xc + y, yc - x);
+				_drawPixel(xc + x, yc - y);
+				_drawPixel(xc - x, yc + y);
+				_drawPixel(xc - y, yc + x);
+				_drawPixel(xc + y, yc + x);
+				_drawPixel(xc + x, yc + y);
+				if (p < 0) p += 4 * x++ + 6;
+				else p += 4 * (x++ - y--) + 10;
+			}
+
 
 
 	}

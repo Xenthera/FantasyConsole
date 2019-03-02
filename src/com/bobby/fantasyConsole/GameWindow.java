@@ -69,7 +69,7 @@ public class GameWindow extends Canvas implements ActionListener{
 		this.container.pack();
 	}
 	
-	public void start() throws InterruptedException {
+	public void start(){
 		long delta, lastLoopTime = 0;
 		boolean running = true;
 		Random random = new Random();
@@ -85,7 +85,7 @@ public class GameWindow extends Canvas implements ActionListener{
 			lastLoopTime = System.currentTimeMillis();
 			g = (Graphics2D) this.strategy.getDrawGraphics();
 			this.gi.draw(gpu, delta);
-			float scale = 0;
+			float scale;
 			if(canvas.getWidth() < canvas.getHeight()){
 				scale = (float)this.height / canvas.getHeight();
 			}else if(canvas.getHeight() < canvas.getWidth()){
@@ -107,13 +107,6 @@ public class GameWindow extends Canvas implements ActionListener{
 			if(x < this.width){
 				padX = (this.width - x) / 2;
 			}
-
-
-
-				while (!LinkedTaskMachine.queue.isEmpty()) {
-					ITask task = LinkedTaskMachine.queue.take();
-					task.execute();
-				}
 
 
 			g.drawImage(canvas, padX, padY, x + padX, y + padY, 0, 0, canvas.getWidth(), canvas.getHeight(), null);

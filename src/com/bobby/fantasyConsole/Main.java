@@ -6,7 +6,7 @@ import java.util.Random;
 
 
 
-public class Main extends Thread implements GameInterface{
+public class Main implements GameInterface{
 
 
     Random random;
@@ -22,17 +22,10 @@ public class Main extends Thread implements GameInterface{
 
 
         game = new GameWindow(this);
-
+        game.start();
 
     }
 
-    public void run(){
-        try {
-            game.start();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
 
     public void setup(GPU g) {
@@ -43,13 +36,12 @@ public class Main extends Thread implements GameInterface{
 
 
         Test test = new Test(g);
-        test.start();
         System.out.println("Setup");
     }
 
     public void draw(GPU g, float delta) {
         //interpreter.exec("g.drawCircle(40, 40, 30)");
-        //g.clear(0);
+        //g.clear(13);
         time += 1;
 //        for (int i = 0; i < 6; i++) {
 //
@@ -154,7 +146,7 @@ public class Main extends Thread implements GameInterface{
 
     public static void main(String[] args){
         Main main = new Main();
-        main.start();
+
 
 
     }
