@@ -75,7 +75,7 @@ public class GameWindow extends Canvas implements ActionListener{
 		Random random = new Random();
 		Graphics2D g = (Graphics2D) this.strategy.getDrawGraphics();
 		
-		BufferedImage canvas = new BufferedImage(258, 144, BufferedImage.TYPE_INT_RGB);
+		BufferedImage canvas = new BufferedImage(258, 258, BufferedImage.TYPE_INT_RGB);
 		GPU gpu = new GPU(canvas);
 		this.gi.setup(gpu);
 		while(running){

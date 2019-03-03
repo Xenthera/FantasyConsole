@@ -7,7 +7,7 @@ import java.io.IOException;
 public class Test{
 
     GPU gpu;
-    int count = 0;
+
     PythonInterpreter interpreter;
 
     public Test(GPU gpu){
@@ -17,29 +17,34 @@ public class Test{
         try {
             String code = Utility.readFile("src/com/bobby/fantasyConsole/python/test.py");
 
-            Thread t = (new Thread(){
-                @Override
-                public void run() {
+            Thread t = (new Thread(() -> {
+                try {
                     interpreter.exec(code);
+                }catch (Exception e){
+                    System.out.println("Thread was timed out... probably");
                 }
-            });
+            }));
 
+            t.setDaemon(true);
             t.start();
-            t.join(4000);
+            t.join(3000);
+
             if(t.isAlive()){
                 t.stop();
+                while (t.isAlive()){
+                    Thread.sleep(200);
+                }
+                gpu.clear(0);
                 gpu.setColor(13);
-                gpu.drawString(0,0, "Too long without yielding");
+                gpu.drawString(0,0, "Process timed out");
+                System.out.println("[WARNING] Thread killed, process took too long to execute");
             }
-
-
-
 
         } catch (IOException e) {
             gpu.setColor(13);
             gpu.drawString(0, 0, e.getMessage());
         } catch (InterruptedException e) {
-            e.printStackTrace();
+
         }
     }
 

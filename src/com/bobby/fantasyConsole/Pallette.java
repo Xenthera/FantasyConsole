@@ -4,6 +4,7 @@ import java.awt.*;
 
 public class Pallette {
 
+
     private Color[] colors = new Color[32];
 
     public Pallette(){
