@@ -8,21 +8,14 @@ import java.util.Random;
 
 public class Main implements GameInterface{
 
-
     Random random;
     GameWindow game;
-
     Terminal terminal;
 
-
     public Main(){
-
         game = new GameWindow(this);
         game.start();
-
     }
-
-
 
     public void setup(GPU g) {
         random = new Random();
@@ -41,7 +34,11 @@ public class Main implements GameInterface{
 
     @Override
     public void keyReleased(int code) {
-
+        terminal.keyReleased(code);
+    }
+    @Override
+    public void keyTyped(char c){
+        terminal.keyTyped(c);
     }
 
     public static void main(String[] args){

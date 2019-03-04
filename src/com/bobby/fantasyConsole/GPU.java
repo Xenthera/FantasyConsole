@@ -40,14 +40,14 @@ public class GPU {
         }
     }
 
-    public void drawString(int x, int y, String s){
-	    s = s.toUpperCase();
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            int value = (int)c;
-            this.printChar(x + (i * 6), y, value);
+		public void drawString(int x, int y, String s){
+			s = s.toUpperCase();
+			for (int i = 0; i < s.length(); i++) {
+				char c = s.charAt(i);
+				int value = (int)c;
+				this.printChar(x + (i * 6), y, value);
 
-        }
+			}
     }
 	
 	public void setColor(int color){

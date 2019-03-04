@@ -11,7 +11,8 @@ public class KeyboardInput implements java.awt.event.KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-
+        char c = e.getKeyChar();
+        this.gameInterface.keyTyped(c);
     }
 
     @Override
