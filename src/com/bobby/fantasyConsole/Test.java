@@ -1,27 +1,38 @@
 package com.bobby.fantasyConsole;
 
+import org.python.core.Py;
+import org.python.core.PyString;
 import org.python.util.PythonInterpreter;
 
 import java.io.IOException;
 
 public class Test{
 
-    GPU gpu;
+    public Terminal terminal;
 
     PythonInterpreter interpreter;
 
-    public Test(GPU gpu){
-        this.gpu = gpu;
+    String appPath = "test.py";
+    String biosPath = "bios.py";
+
+    public Test(Terminal terminal){
+        this.terminal = terminal;
         interpreter = new PythonInterpreter();
-        interpreter.set("GPU", this.gpu);
+        interpreter.set("terminal", this.terminal);
         try {
-            String code = Utility.readFile("src/com/bobby/fantasyConsole/python/test.py");
+            String code = Utility.readFile("Python/" + appPath);
+            String bios = Utility.readFile("Python/" + biosPath);
 
             Thread t = (new Thread(() -> {
                 try {
-                    interpreter.exec(code);
+                    interpreter.exec(bios);
+                    interpreter.set("_code", new PyString(code));
+                    interpreter.exec("msg = \"\"\ntry:\n exec(_code)\nexcept Exception as e:\n msg = str(e)");
+                    PyString err = (PyString)interpreter.get("msg");
+                    terminal.setTextColor(13);
+                    terminal.print(err.toString());
                 }catch (Exception e){
-                    System.out.println("Thread was timed out... probably");
+                    System.out.println("Error: " + e.getLocalizedMessage());
                 }
             }));
 
@@ -34,15 +45,14 @@ public class Test{
                 while (t.isAlive()){
                     Thread.sleep(200);
                 }
-                gpu.clear(0);
-                gpu.setColor(13);
-                gpu.drawString(0,0, "Process timed out");
-                System.out.println("[WARNING] Thread killed, process took too long to execute");
+                this.terminal.clear();
+                this.terminal.setTextColor(13);
+                this.terminal.print("Process timed out");
             }
 
         } catch (IOException e) {
-            gpu.setColor(13);
-            gpu.drawString(0, 0, e.getMessage());
+            terminal.setTextColor(13);
+            terminal.print(e.getMessage());
         } catch (InterruptedException e) {
 
         }

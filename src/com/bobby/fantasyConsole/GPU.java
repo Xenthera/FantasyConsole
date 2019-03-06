@@ -32,23 +32,31 @@ public class GPU {
 	}
 
 	private void printChar(int x, int y, int character){
-	    String c = this.font.get(character);
-        for (int i = 0; i < c.length(); i++) {
-            if(c.substring(i, i + 1).equals("1")){
-                this.drawPixel(x + (i % 6), y + (i / 6));
-            }
-        }
-    }
-
-		public void drawString(int x, int y, String s){
-			s = s.toUpperCase();
-			for (int i = 0; i < s.length(); i++) {
-				char c = s.charAt(i);
-				int value = (int)c;
-				this.printChar(x + (i * 6), y, value);
-
+		String c = this.font.get(character);
+		for (int i = 0; i < c.length(); i++) {
+			if(c.substring(i, i + 1).equals("1")){
+				this.drawPixel(x + (i % 6), y + (i / 6));
 			}
-    }
+		}
+	}
+
+	public void drawString(int x, int y, String s) {
+		s = s.toUpperCase();
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			int value = (int) c;
+			this.printChar(x + (i * 6), y, value);
+
+		}
+	}
+
+	public void fillRect(int x, int y, int width, int height){
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				this.drawPixel(i + x, j + y);
+			}
+		}
+	}
 	
 	public void setColor(int color){
 		this.currentColor = color;
@@ -69,9 +77,8 @@ public class GPU {
 	}
 
 	public void drawPixel(int x, int y){
-		GPU gpu = this;
-		if(x >= 0 && x < gpu.canvas.getWidth() && y >= 0 && y < gpu.canvas.getHeight()){
-			gpu.canvas.setRGB(x, y, gpu.pallette.get(gpu.currentColor).getRGB());
+		if(x >= 0 && x < this.canvas.getWidth() && y >= 0 && y < this.canvas.getHeight()){
+			this.canvas.setRGB(x, y, this.pallette.get(this.currentColor).getRGB());
 		}
 	}
 	
