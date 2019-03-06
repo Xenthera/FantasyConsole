@@ -56,7 +56,7 @@ public class Terminal {
 
             textBuffer.terminalChars[idx + i] = s.charAt(i);
             textBuffer.charColors[idx + i] = this.textColor;
-            textBuffer.charBgColors[idx + i] = this.backgroundColor;
+            textBuffer.charBgColors[idx + i] = this.textBackgroundColor;
         }
         idx += s.length();
         this.cursX = (idx % width);
