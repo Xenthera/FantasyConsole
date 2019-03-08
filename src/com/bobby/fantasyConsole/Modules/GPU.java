@@ -1,15 +1,19 @@
-package com.bobby.fantasyConsole;
+package com.bobby.fantasyConsole.Modules;
 
-import java.awt.Color;
+import com.bobby.fantasyConsole.FontSet;
+import com.bobby.fantasyConsole.Module;
+import com.bobby.fantasyConsole.Pallette;
+
 import java.awt.image.BufferedImage;
 
-public class GPU {
+public class GPU extends Module {
 	private BufferedImage canvas;
 	private int currentColor;
 	private Pallette pallette;
 	FontSet font;
 	
 	public GPU(BufferedImage canvas){
+		super("GPU");
 		this.canvas = canvas;
 		this.currentColor = 15;
 		this.pallette = new Pallette();

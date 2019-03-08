@@ -1,10 +1,12 @@
-package com.bobby.fantasyConsole;
+package com.bobby.fantasyConsole.Modules.Terminal;
 
 
-import java.util.Arrays;
+import com.bobby.fantasyConsole.Module;
+import com.bobby.fantasyConsole.Modules.GPU;
+
 import java.util.Random;
 
-public class Terminal {
+public class Terminal extends Module {
 
     boolean[] keysPressed;
 
@@ -26,6 +28,7 @@ public class Terminal {
     int color = 0;
 
     public Terminal(){
+        super("terminal");
         textBuffer = new TextBuffer(width * height);
         keysPressed = new boolean[256];
     }
@@ -119,6 +122,22 @@ public class Terminal {
         this.print(String.valueOf(s));
     }
 
+    public void print(boolean s){
+        this.print(String.valueOf(s));
+    }
+
+    public void write(float s){
+        this.write(String.valueOf(s));
+    }
+
+    public void write(int s){
+        this.write(String.valueOf(s));
+    }
+
+    public void write(boolean s){
+        this.write(String.valueOf(s));
+    }
+
     public void setCursorPos(int x, int y){
         if(x >= width) x = width - 1;
         if(y >= height) y = height - 1;
@@ -153,7 +172,7 @@ public class Terminal {
         this.textBackgroundColor = color;
     }
 
-    public void draw(GPU g, float delta) {
+    public void draw(GPU g) {
         count += 1;
 
         g.clear(backgroundColor);
@@ -164,7 +183,7 @@ public class Terminal {
             g.drawString((i % 43) * 6, (i / 43) * 6, String.valueOf(textBuffer.terminalChars[i]));
 
         }
-        if(_cursorFlash)
+        if(_cursorFlash && isCursorFlashing)
         g.drawLine(this.cursX * 6, this.cursY * 6 + 6, this.cursX * 6 + 5, this.cursY * 6 + 6);
 
 
@@ -186,6 +205,10 @@ public class Terminal {
 //        g.setColor(15);
 //        g.drawString(0,g.getHeight() - 6, "(" + cursX + ", " + cursY + ")");
 
+    }
+
+    public void setCursorFlash(boolean flash){
+        this.isCursorFlashing = flash;
     }
 
     public void keyReleased(int code){
@@ -245,6 +268,14 @@ public class Terminal {
                 }
             }
         }
+    }
+
+    public int getCursX(){
+        return cursX;
+    }
+
+    public int getCursY(){
+        return cursY;
     }
 
     public void keyPressed(int code){

@@ -1,4 +1,4 @@
-package com.bobby.fantasyConsole;
+package com.bobby.fantasyConsole.Modules.Terminal;
 
 public class TextBuffer {
 

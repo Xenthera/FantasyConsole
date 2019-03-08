@@ -1,17 +1,15 @@
 package com.bobby.fantasyConsole;
 
-import org.python.util.PythonInterpreter;
+import com.bobby.fantasyConsole.Modules.GPU;
+import com.bobby.fantasyConsole.Modules.Terminal.Terminal;
 
 import java.util.Random;
 
 
 
 public class Main implements GameInterface{
-
-    Random random;
+    Computer computer;
     GameWindow game;
-    Terminal terminal;
-    Test test;
 
     public Main(){
         game = new GameWindow(this);
@@ -19,28 +17,26 @@ public class Main implements GameInterface{
     }
 
     public void setup(GPU g) {
-        random = new Random();
         game.setSize(258 * 3, 258 * 3);
-        terminal = new Terminal();
-        test = new Test(terminal);
+        computer = new Computer(g);
     }
 
     public void draw(GPU g, float delta) {
-        test.terminal.draw(g, delta);
+        computer.draw(g, delta);
     }
 
     @Override
     public void keyPressed(int code) {
-        //test.terminal.keyPressed(code);
+        computer.keyPressed(code);
     }
 
     @Override
     public void keyReleased(int code) {
-        //test.terminal.keyReleased(code);
+        computer.keyReleased(code);
     }
     @Override
     public void keyTyped(char c){
-        //terminal.keyTyped(c);
+        computer.keyTyped(c);
     }
 
     public static void main(String[] args){

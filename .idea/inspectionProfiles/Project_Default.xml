@@ -8,6 +8,8 @@
           <option value="com.bobby.fantasyConsole.python.test.GPU" />
           <option value="Python.test.terminal" />
           <option value="Python.test.range" />
+          <option value="sys" />
+          <option value="Python.bios.*" />
         </list>
       </option>
     </inspection_tool>
