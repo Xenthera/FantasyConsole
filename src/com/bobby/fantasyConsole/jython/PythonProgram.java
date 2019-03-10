@@ -16,13 +16,8 @@ public class PythonProgram {
     public boolean hasGameLoop = false;
     private String code;
 
-    public PythonProgram(JythonClassLoader classLoader, String code, String bios, ArrayList<Module> modules){
-        this.interpreter = new PythonInterpreter();
-        this.interpreter.getSystemState().setClassLoader(classLoader);
-        this.interpreter.exec(bios);
-        for (int i = 0; i < modules.size(); i++) {
-            this.interpreter.set(modules.get(i).name, modules.get(i));
-        }
+    public PythonProgram(PythonInterpreter interpreter, String code){
+        this.interpreter = interpreter;
         this.code = code;
     }
 

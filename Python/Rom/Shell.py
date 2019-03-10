@@ -6,9 +6,8 @@ errorColor = 13;
 
 terminal.setTextColor(10)
 
-welcomeMessage = '''Fantasy Console written by Bobby
-Version 0.0.1 2019
-'''
+welcomeMessage = 'Fantasy Console written by Bobby\nVersion 0.0.1 2019\n'
+
 
 drawMode = False
 
@@ -18,8 +17,7 @@ lastCommand = ""
 commands = ["run", "help", "clear", "ls", "exit"]
 
 
-print(welcomeMessage)
-
+terminal.write(welcomeMessage)
 terminal.setTextColor(highlightColor)
 terminal.write(shell.getCWD() + ">")
 
@@ -36,7 +34,7 @@ def draw():
         terminal.draw(GPU)
 
 def key_pressed(code):
-    global lastCommand
+    global lastCommand, currentInput
     if(code == 10):
         print("")
         parse_command()
@@ -52,7 +50,6 @@ def key_pressed(code):
             terminal.setCursorPos(terminal.getCursX() - 1, terminal.getCursY())
             currentInput = currentInput[:-1]
     else:
-        global currentInput
         terminal.write(chr(code))
         currentInput += chr(code)
 

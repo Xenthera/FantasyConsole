@@ -1,10 +1,7 @@
 package com.bobby.fantasyConsole.Modules.Terminal;
 
-
 import com.bobby.fantasyConsole.Module;
 import com.bobby.fantasyConsole.Modules.GPU;
-
-import java.util.Random;
 
 public class Terminal extends Module {
 
@@ -49,70 +46,85 @@ public class Terminal extends Module {
     }
 
     public void write(String s){
-        int idx = getIndex(cursX, cursY);
-        for (int i = 0; i < s.length(); i++) {
+        String out = "";
+        String[] lines;
 
-            if(idx + i == textBuffer.terminalChars.length){
-                textBuffer = new TextBuffer(textBuffer, 1);
-                idx -= width;
-            }
-
-            textBuffer.terminalChars[idx + i] = s.charAt(i);
-            textBuffer.charColors[idx + i] = this.textColor;
-            textBuffer.charBgColors[idx + i] = this.textBackgroundColor;
-        }
-        idx += s.length();
-        this.cursX = (idx % width);
-        this.cursY = (idx / width);
-    }
-
-    public void print(String s){
-            String out = "";
-            String[] lines;
-
-            if(s.indexOf("\t") != -1) {
-                lines = s.split("\t");
-                //System.out.println(Arrays.toString(lines));
-                for (int i = 0; i < lines.length; i++) {
-                    out += lines[i];
-                    if(i < lines.length - 1) {
-                        for (int j = 0; j < 2; j++) {
-                            out += " ";
-                        }
-                    }
-                }
-                if(lines.length == 1){ // There was a tab but no strings surrounding it
-
+        if(s.indexOf("\t") != -1) {
+            lines = s.split("\t");
+            for (int i = 0; i < lines.length; i++) {
+                out += lines[i];
+                if(i < lines.length - 1) {
                     for (int j = 0; j < 2; j++) {
                         out += " ";
                     }
                 }
-
-            }else{
-                out = s;
             }
-            if(out.indexOf("\n") != -1) {
-                lines = out.split("\n");
+            if(lines.length == 1){ // There was a tab but no strings surrounding it
 
-                for (int i = 0; i < lines.length; i++) {
-                    this.write(lines[i]);
-                    if(i < lines.length - 1) {
-                        this.cursY += 1;
-                        this.cursX = 0;
-                    }
+                for (int j = 0; j < 2; j++) {
+                    out += " ";
                 }
+            }
 
-                if(lines.length == 0){ // There was a new line but no strings surrounding it
+        }else{
+            out = s;
+        }
+        if(out.indexOf("\n") != -1) {
+            lines = out.split("\n");
+
+            for (int i = 0; i < lines.length; i++) {
+                int idx = getIndex(cursX, cursY);
+                for (int j = 0; j < lines[i].length(); j++) {
+
+                    if(idx + j == textBuffer.terminalChars.length){
+                        textBuffer = new TextBuffer(textBuffer, 1);
+                        idx -= width;
+                    }
+
+                    textBuffer.terminalChars[idx + j] = lines[i].charAt(j);
+                    textBuffer.charColors[idx + j] = this.textColor;
+                    textBuffer.charBgColors[idx + j] = this.textBackgroundColor;
+                }
+                idx += lines[i].length();
+                this.cursX = (idx % width);
+                this.cursY = (idx / width);
+                if(i < lines.length - 1) {
                     this.cursY += 1;
                     this.cursX = 0;
                 }
-            }else{
-                this.write(out);
             }
 
+            for (int i = out.length() - 1; i >= 0; i--) { // Also have to check if there's a new line(s) at the end of the string
+                if(Character.toString(out.charAt(i)).equals("\n")){
+                    this.cursY += 1;
+                    this.cursX = 0;
+                }else{
+                    break;
+                }
+            }
+        }else{
+            int idx = getIndex(cursX, cursY);
+            for (int i = 0; i < out.length(); i++) {
 
+                if(idx + i == textBuffer.terminalChars.length){
+                    textBuffer = new TextBuffer(textBuffer, 1);
+                    idx -= width;
+                }
+
+                textBuffer.terminalChars[idx + i] = out.charAt(i);
+                textBuffer.charColors[idx + i] = this.textColor;
+                textBuffer.charBgColors[idx + i] = this.textBackgroundColor;
+            }
+            idx += out.length();
+            this.cursX = (idx % width);
+            this.cursY = (idx / width);
+        }
     }
 
+
+    public void print(String s){
+        this.write(s); //We don't have to add a new line because python's print statement does that already unless otherwise specified
+    }
 
     public void print(float s){
         this.print(String.valueOf(s));
@@ -152,19 +164,6 @@ public class Terminal extends Module {
         return (width * y + x);
     }
 
-    protected String getSaltString() {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder salt = new StringBuilder();
-        Random rnd = new Random();
-        while (salt.length() < 10) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            salt.append(SALTCHARS.charAt(index));
-        }
-        String saltStr = salt.toString();
-        return saltStr;
-
-    }
-
     public void setTextColor(int color){
         this.textColor = color;
     }
@@ -186,24 +185,11 @@ public class Terminal extends Module {
         if(_cursorFlash && isCursorFlashing)
         g.drawLine(this.cursX * 6, this.cursY * 6 + 6, this.cursX * 6 + 5, this.cursY * 6 + 6);
 
-
-        //setCursorPos(10,10);
-        String s = "abcdefghijklmnopqrstuvwxyz";
-
         if(isCursorFlashing){
             if(count % 15 == 0){
                 _cursorFlash = !_cursorFlash;
             }
         }
-//        String str = getSaltString();
-//        setCursorPos(width / 2 - str.length() / 2, height / 2);
-//        write(str);
-
-//        //Test code
-//        g.setColor(color);
-//        g.drawString(0,g.getHeight() - 12, String.valueOf(color));
-//        g.setColor(15);
-//        g.drawString(0,g.getHeight() - 6, "(" + cursX + ", " + cursY + ")");
 
     }
 

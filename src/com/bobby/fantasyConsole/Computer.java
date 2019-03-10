@@ -6,6 +6,7 @@ import com.bobby.fantasyConsole.Modules.Terminal.Terminal;
 import com.bobby.fantasyConsole.jython.JythonClassLoader;
 import com.bobby.fantasyConsole.jython.PythonProgram;
 import org.python.core.PyString;
+import org.python.util.PythonInterpreter;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -16,22 +17,28 @@ public class Computer {//Handle creation of python environment, and boot the bio
     Stack<PythonProgram> programStack;
     PythonProgram currentProgram;
     JythonClassLoader classLoader;
-    Terminal terminalReference;
+    Terminal terminal;
 
-
+    PythonInterpreter interpreter;
     String biosPath = "Python/bios.py";
 
     ArrayList<Module> modules;
 
     //TODO: add file system
-    public Computer(GPU g) {
+    public Computer(GPU gpu) {
         classLoader = new JythonClassLoader(Thread.currentThread().getContextClassLoader());
         modules = new ArrayList<>();
-        terminalReference = new Terminal();
-        modules.add(terminalReference);
-        modules.add(g);
+        terminal = new Terminal();
+        modules.add(terminal);
+        modules.add(gpu);
         modules.add(new Shell(this));
 
+        this.interpreter = new PythonInterpreter();
+        this.interpreter.getSystemState().setClassLoader(classLoader);
+        for (int i = 0; i < modules.size(); i++) {
+            this.interpreter.set(modules.get(i).name, modules.get(i));
+        }
+        this.run(biosPath);
         this.programStack = new Stack<>();
 
         this.run("Python/Rom/Shell.py");
@@ -41,20 +48,19 @@ public class Computer {//Handle creation of python environment, and boot the bio
         try {
 
             String code = Utility.readFile(path);
-            String bios = Utility.readFile(biosPath);
-            currentProgram = new PythonProgram(this.classLoader, code, bios, this.modules);
+            currentProgram = new PythonProgram(this.interpreter, code);
             String errMsg = currentProgram.execute();
             if(errMsg != null){
-                this.terminalReference.setTextColor(13);
-                this.terminalReference.print(errMsg);
+                this.terminal.setTextColor(13);
+                this.terminal.print(errMsg);
             }
             if(currentProgram.hasGameLoop){
                 this.programStack.push(currentProgram);
             }
 
         } catch (IOException e) {
-            terminalReference.setTextColor(13);
-            terminalReference.print(e.getMessage());
+            terminal.setTextColor(13);
+            terminal.print(e.getMessage());
         }
 
     }
@@ -64,20 +70,20 @@ public class Computer {//Handle creation of python environment, and boot the bio
             PythonProgram prg = this.programStack.elementAt(0);
             prg.draw();
         }else{
-            this.terminalReference.draw(g);
+            this.terminal.draw(g);
         }
     }
     public void keyPressed(int code) {
-        this.terminalReference.keyPressed(code);
+        this.terminal.keyPressed(code);
         if(this.programStack.size() > 0){
             this.programStack.elementAt(0).keyPressed(code);
         }
     }
     public void keyReleased(int code){
-        this.terminalReference.keyReleased(code);
+        this.terminal.keyReleased(code);
     }
     public void keyTyped(char c){
-        //this.terminalReference.keyTyped(c);
+
     }
 
 //    private void runWithTimeout(int timeout, String code) {
