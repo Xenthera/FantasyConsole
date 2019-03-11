@@ -8,52 +8,49 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.util.Random;
 
 import javax.swing.*;
 
 public class GameWindow extends Canvas implements ActionListener{
-	
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
-	JFrame container;
-	JPanel panel;
-	BufferStrategy strategy;
-	int width, height;
-	
-	GameInterface gi;
-	
+	private JFrame container;
+	private JPanel panel;
+	private BufferStrategy strategy;
+	private int width, height;
+	private GameInterface gi;
+
 	public GameWindow(GameInterface gi){
 		this.width = 800;
 		this.height = 600;
-		
-		container = new JFrame("Fantasy Console");
-		panel = (JPanel) container.getContentPane();
-		panel.setPreferredSize(new Dimension(this.width, this.height));
-		panel.setLayout(null);
-		setBounds(0, 0, this.width, this.height);
-		panel.add(this);
-		panel.setBackground(new Color(30,30,30));
-		setIgnoreRepaint(true);
-		container.pack();
-		container.setResizable(true);
-		container.setVisible(true);
+		this.container = new JFrame("Fantasy Console");
+		this.panel = (JPanel) this.container.getContentPane();
+		this.panel.setPreferredSize(new Dimension(this.width, this.height));
+		this.panel.setLayout(null);
+		this.panel.add(this);
+		this.panel.setBackground(new Color(0,0,0));
+		this.container.setVisible(true);
+		this.container.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		this.setBounds(0, 0, this.width, this.height);
+		this.setIgnoreRepaint(true);
+		this.createBufferStrategy(2);
+		this.strategy = getBufferStrategy();
 		this.requestFocusInWindow();
-		
-		createBufferStrategy(2);
-		strategy = getBufferStrategy();
-		container.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.gi = gi;
-
 		this.addKeyListener(new KeyboardInput(this.gi));
-	
+		this.panel.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				setSize(panel.getWidth(), panel.getHeight());
+			}
+		});
+		this.container.pack();
 	}
-	
+
 	public int getWidth() {
 		return width;
 	}
@@ -69,16 +66,15 @@ public class GameWindow extends Canvas implements ActionListener{
 		this.setBounds(0,0, width, height);
 		this.container.pack();
 	}
-	
+
 	public void start(){
 		long delta, lastLoopTime = 0;
 		boolean running = true;
-		Random random = new Random();
-		Graphics2D g = (Graphics2D) this.strategy.getDrawGraphics();
-		
+		Graphics2D g;
 		BufferedImage canvas = new BufferedImage(258, 258, BufferedImage.TYPE_INT_RGB);
 		GPU gpu = new GPU(canvas);
 		this.gi.setup(gpu);
+
 		while(running){
 			this.width = this.panel.getWidth();
 			this.height = this.panel.getHeight();
@@ -98,7 +94,7 @@ public class GameWindow extends Canvas implements ActionListener{
 					scale = (float)this.height / canvas.getHeight();
 				}
 			}
-			
+
 			int x = (int)(canvas.getWidth() * scale);
 			int y = (int)(canvas.getHeight() * scale);
 			int padX = 0, padY = 0;
@@ -117,7 +113,7 @@ public class GameWindow extends Canvas implements ActionListener{
 			try{
 				Thread.sleep((long) (1000f / 30f));
 			}catch (Exception e){
-				
+				System.out.println("Unable to sleep for who knows why");
 			}
 		}
 	}

@@ -38,9 +38,9 @@ public class PythonProgram {
         this.drawMethod.__call__();
     }
 
-    public void keyPressed(int code){
+    public void keyTyped(char code){
         if(this.keyPressedMethod != null) {
-            this.keyPressedMethod.__call__(new PyInteger(code));
+            this.keyPressedMethod.__call__(new PyInteger(Integer.valueOf(code)));
         }
     }
 }

@@ -75,15 +75,15 @@ public class Computer {//Handle creation of python environment, and boot the bio
     }
     public void keyPressed(int code) {
         this.terminal.keyPressed(code);
-        if(this.programStack.size() > 0){
-            this.programStack.elementAt(0).keyPressed(code);
-        }
+
     }
     public void keyReleased(int code){
         this.terminal.keyReleased(code);
     }
     public void keyTyped(char c){
-
+        if(this.programStack.size() > 0){
+            this.programStack.elementAt(0).keyTyped(c); //TODO: Idk if this will be permanent... gotta figure out what to do here
+        }
     }
 
 //    private void runWithTimeout(int timeout, String code) {
