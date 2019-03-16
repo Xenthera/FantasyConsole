@@ -6,7 +6,7 @@ import com.bobby.fantasyConsole.Module;
 public class Shell extends Module {
 
     private Computer computerReference;
-    String cwd = "/home";
+    String cwd = "/";
 
     public Shell(Computer computer){
         super("shell");
@@ -15,6 +15,10 @@ public class Shell extends Module {
 
     public void run(String path){
         this.computerReference.run(path);
+    }
+
+    public void exit(){
+        this.computerReference.exitProgram();
     }
 
     public String getCWD(){

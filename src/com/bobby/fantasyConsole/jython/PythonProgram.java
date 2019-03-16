@@ -1,9 +1,7 @@
 package com.bobby.fantasyConsole.jython;
 
 import com.bobby.fantasyConsole.Module;
-import org.python.core.PyFunction;
-import org.python.core.PyInteger;
-import org.python.core.PyString;
+import org.python.core.*;
 import org.python.util.PythonInterpreter;
 
 import java.util.ArrayList;
@@ -15,24 +13,30 @@ public class PythonProgram {
     private PyFunction keyPressedMethod;
     public boolean hasGameLoop = false;
     private String code;
+    public String name;
 
-    public PythonProgram(PythonInterpreter interpreter, String code){
+    public PythonProgram(PythonInterpreter interpreter, String code, String name){
         this.interpreter = interpreter;
         this.code = code;
+        this.name = name;
     }
 
     public String execute(){
         this.interpreter.set("_code", new PyString(code));
         this.interpreter.exec("msg = \"\"\ntry:\n exec(_code)\nexcept Exception as e:\n msg = str(e)");
-        this.drawMethod = (PyFunction)this.interpreter.get("draw");
-        this.keyPressedMethod = (PyFunction)this.interpreter.get("key_pressed");
+        this.interpreter.exec("_hasLoop = \"def draw():\" in _code");
+        PyBoolean hasLoop = (PyBoolean)this.interpreter.get("_hasLoop");
         PyString err = (PyString) this.interpreter.get("msg");
-        if(this.drawMethod != null && !err.asString().equals("null")){
-            this.hasGameLoop = true;
+        if(hasLoop.getBooleanValue()) {
+            this.drawMethod = (PyFunction) this.interpreter.get("draw");
+            this.keyPressedMethod = (PyFunction) this.interpreter.get("key_pressed");
+            if (this.drawMethod != null && !err.asString().equals("null")) {
+                this.hasGameLoop = true;
+            }
         }
-
         return err.asString();
     }
+
 
     public void draw(){
         this.drawMethod.__call__();

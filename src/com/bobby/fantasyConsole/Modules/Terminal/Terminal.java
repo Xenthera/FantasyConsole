@@ -38,7 +38,7 @@ public class Terminal extends Module {
 
     public void clearLine(int line){
         if(line < height){
-            int idx = getIndex(line, 0);
+            int idx = getIndex(line * width, 0);
             for (int i = 0; i < width; i++) {
                 textBuffer.terminalChars[idx + i] = (char)0;
             }
@@ -114,6 +114,12 @@ public class Terminal extends Module {
                 textBuffer.terminalChars[idx + i] = out.charAt(i);
                 textBuffer.charColors[idx + i] = this.textColor;
                 textBuffer.charBgColors[idx + i] = this.textBackgroundColor;
+            }
+            if(out.length() == 0){
+                if(idx == textBuffer.terminalChars.length){
+                    textBuffer = new TextBuffer(textBuffer, 1);
+                    idx -= width;
+                }
             }
             idx += out.length();
             this.cursX = (idx % width);
@@ -263,6 +269,9 @@ public class Terminal extends Module {
     public int getCursY(){
         return cursY;
     }
+
+    public int getWidth(){return width;}
+    public int getHeight(){return height;}
 
     public void keyPressed(int code){
         keysPressed[code] = true;

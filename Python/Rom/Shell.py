@@ -1,23 +1,22 @@
 import random
 
 highlightColor = 11
-textColor = 15;
+textColor = 14;
 errorColor = 13;
 
 terminal.setTextColor(10)
 
-welcomeMessage = 'Fantasy Console written by Bobby\nVersion 0.0.1 2019\n'
-
+welcomeMessage = 'Fantasy Console written by Bobby\nVersion 0.0.1 2019'
 
 drawMode = False
 
 currentInput = ""
 lastCommand = ""
 
-commands = ["run", "help", "clear", "ls", "exit"]
+terminal.clear()
+terminal.setCursorPos(0,0)
 
-
-terminal.write(welcomeMessage)
+print(welcomeMessage)
 terminal.setTextColor(highlightColor)
 terminal.write(shell.getCWD() + ">")
 
@@ -37,56 +36,51 @@ def key_pressed(code):
     global lastCommand, currentInput
     if(code == 10):
         print("")
-        parse_command()
-        if(lastCommand.strip().lower() != "clear"):
-            print("")
-        terminal.setTextColor(highlightColor)
-        terminal.write(shell.getCWD() + ">")
-        terminal.setTextColor(textColor)
+        parse_command(currentInput)
+        currentInput = ""
     elif(code == 8):
-        if(len(currentInput) > 0):
-            terminal.setCursorPos(terminal.getCursX() - 1, terminal.getCursY())
-            terminal.write(" ")
-            terminal.setCursorPos(terminal.getCursX() - 1, terminal.getCursY())
-            currentInput = currentInput[:-1]
+        currentInput = currentInput[:-1]
     else:
-        terminal.write(chr(code))
         currentInput += chr(code)
 
-def parse_command():
-    global currentInput
+    terminal.clearLine(terminal.getCursY())
+    terminal.setCursorPos(0, terminal.getCursY())
+    terminal.setTextColor(highlightColor)
+    terminal.write(shell.getCWD() + ">")
+    terminal.setTextColor(textColor)
+    terminal.write(currentInput)
+
+def parse_command(command):
     global lastCommand
-    global commands
-    if(currentInput.lower() in commands):
+
+    commands = command.strip().lower().split()
+    if(len(commands) > 0):
         try:
-            globals()[currentInput.strip().lower()]()
+            globals()[commands[0]](commands)
         except Exception as e:
-            print(e)
-    else:
-        unknown_command()
-    lastCommand = currentInput
-    currentInput = ""
+            unknown_command(commands[0])
+        lastCommand = commands[0]
 
 
-def null():
+
+def null(args):
     terminal.write("")
 
-def ls():
+def ls(args):
     terminal.setTextColor(8)
     terminal.write("fake directories and ")
     terminal.setTextColor(9)
-    terminal.write("files.py lol.txt")
+    terminal.write("files.py lol.txt\n")
 
-def unknown_command():
-    global currentInput
+def unknown_command(command):
     terminal.setTextColor(errorColor)
-    terminal.write("Unknown command: " + currentInput)
+    print("Unknown command: " + command)
 
-def clear():
+def clear(args):
     terminal.clear()
     terminal.setCursorPos(0,0)
 
-def help():
+def help(args):
     terminal.setTextColor(14)
     terminal.write("[")
     terminal.setTextColor(15)
@@ -94,15 +88,22 @@ def help():
     terminal.setTextColor(14)
     terminal.write("] ")
     terminal.setTextColor(10)
-    terminal.write('Welcome to the help command, this is just a test command for now.')
+    terminal.write('Welcome to the help command, this is just a test command for now.\n')
 
-def run():
-    terminal.setTextColor(9)
-    terminal.write("placeholder for the run command")
+def run(args):
+    if(len(args) < 2):
+        print("Usage: run <filename>")
+        return
+    shell.run("Python/Rom/" + args[1])
 
-def exit():
+def exit(args):
     terminal.setTextColor(14)
-    terminal.write("This will exit in the future")
+    terminal.write("Exiting")
+    shell.exit()
+
+def info(args):
+    terminal.setTextColor(10)
+    print(welcomeMessage)
 
 
 
