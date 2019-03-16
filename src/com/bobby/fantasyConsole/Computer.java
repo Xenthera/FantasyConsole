@@ -84,7 +84,9 @@ public class Computer {//Handle creation of python environment, and boot the bio
         prg.draw();
     }
     public void keyPressed(int code) {
-        this.terminal.keyPressed(code);
+        if(this.programStack.size() > 0){
+            this.programStack.lastElement().keyPressed(code); //TODO: Idk if this will be permanent... gotta figure out what to do here
+        }
 
     }
     public void keyReleased(int code){

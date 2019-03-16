@@ -24,4 +24,8 @@ public class Shell extends Module {
     public String getCWD(){
         return this.cwd;
     }
+
+    public void setCWD(String path){
+        this.cwd = path + "/";
+    }
 }

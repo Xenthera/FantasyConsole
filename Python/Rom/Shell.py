@@ -1,8 +1,11 @@
-import random
+import random, os
 
 highlightColor = 11
 textColor = 14;
 errorColor = 13;
+
+previousCommands = []
+previousCommandsIndex = 0
 
 terminal.setTextColor(10)
 
@@ -25,30 +28,42 @@ GPU.clear(0)
 
 def draw():
     terminal.setTextColor(textColor)
-    GPU.setColor(random.randint(0,15))
-    x = random.randint(0, GPU.getWidth())
-    y = random.randint(0, GPU.getHeight())
-    GPU.drawCircle(x, y, random.randint(2,5))
     if not drawMode:
         terminal.draw(GPU)
 
-def key_pressed(code):
-    global lastCommand, currentInput
-    if(code == 10):
-        print("")
-        parse_command(currentInput)
-        currentInput = ""
-    elif(code == 8):
-        currentInput = currentInput[:-1]
-    else:
-        currentInput += chr(code)
-
+def updateInput():
     terminal.clearLine(terminal.getCursY())
     terminal.setCursorPos(0, terminal.getCursY())
     terminal.setTextColor(highlightColor)
     terminal.write(shell.getCWD() + ">")
     terminal.setTextColor(textColor)
     terminal.write(currentInput)
+
+def key_typed(code):
+    global lastCommand, currentInput, previousCommandsIndex, previousCommands
+    if(code == 10):
+        print("")
+        parse_command(currentInput)
+        currentInput = ""
+        previousCommandsIndex = len(previousCommands)
+    elif(code == 8):
+        currentInput = currentInput[:-1]
+    elif(code == 0):
+        pass
+    else:
+        currentInput += chr(code)
+    updateInput()
+
+def key_pressed(code):
+    global currentInput, previousCommandsIndex
+    if(code == 38):
+        if(previousCommandsIndex == 0 and len(previousCommands) != 0):
+            previousCommandsIndex = len(previousCommands) - 1
+        else:
+            if(previousCommandsIndex > 0):
+                previousCommandsIndex -= 1;
+        currentInput = previousCommands[previousCommandsIndex]
+    updateInput()
 
 def parse_command(command):
     global lastCommand
@@ -58,19 +73,52 @@ def parse_command(command):
         try:
             globals()[commands[0]](commands)
         except Exception as e:
-            unknown_command(commands[0])
-        lastCommand = commands[0]
+            words = str(e).split()
+            if(len(words) == 1):
+                unknown_command(commands[0])
+            else:
+                terminal.setTextColor(13)
+                print(e)
+
+        if(command != lastCommand):
+            previousCommands.append(command)
+            lastCommand = previousCommands[len(previousCommands) - 1]
 
 
 
 def null(args):
     terminal.write("")
 
+def cwd(args):
+    print("\"" + shell.getCWD() + "\"")
+
+def hello(args):
+    terminal.setTextColor(random.randint(0,15))
+    terminal.print("Hello world\n")
+
+def cd(args):
+    if(len(args) < 2):
+        print("Usage: cd <path>")
+        return
+    shell.setCWD(args[1])
+
 def ls(args):
-    terminal.setTextColor(8)
-    terminal.write("fake directories and ")
+    items = os.listdir("Python/Rom/")
+    files = []
+    dirs = []
+    for item in items:
+        if("." in item):
+            files.append(item)
+        else:
+            dirs.append(item)
     terminal.setTextColor(9)
-    terminal.write("files.py lol.txt\n")
+    for file in files:
+        terminal.write(file + " ")
+    terminal.setTextColor(10)
+    for dir in dirs:
+        terminal.write(dir + " ")
+    print("")
+
 
 def unknown_command(command):
     terminal.setTextColor(errorColor)
@@ -104,6 +152,15 @@ def exit(args):
 def info(args):
     terminal.setTextColor(10)
     print(welcomeMessage)
+
+def edit(args):
+    if(len(args) < 2):
+        print("Usage: edit <filename>")
+        return
+    f = open("Python/Rom/" + args[1])
+    terminal.setTextColor(15)
+    print(f.read())
+    f.close()
 
 
 
