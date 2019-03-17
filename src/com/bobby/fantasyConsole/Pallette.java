@@ -10,11 +10,11 @@ public class Pallette {
     public Pallette(){
         colors[0] = new Color(23, 17, 31);
         colors[1] = new Color(34,52,209);
-        colors[2] = new Color(12,126,69);
+        colors[2] = new Color(0, 147, 24);
         colors[3] = new Color(68,170,204);
-        colors[4] = new Color(138, 54, 34);
-        colors[5] = new Color(92, 46, 120);
-        colors[6] = new Color(170, 92, 61);
+        colors[4] = new Color(138, 61, 38);
+        colors[5] = new Color(105, 49, 120);
+        colors[6] = new Color(198, 117, 17);
         colors[7] = new Color(181, 181, 181);
         colors[8] = new Color(94, 96, 110);
         colors[9] = new Color(76, 129, 251);

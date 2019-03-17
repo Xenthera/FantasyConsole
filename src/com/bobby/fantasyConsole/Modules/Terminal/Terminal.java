@@ -5,7 +5,7 @@ import com.bobby.fantasyConsole.Modules.GPU;
 
 public class Terminal extends Module {
 
-    boolean[] keysPressed;
+    public boolean[] keysPressed;
 
     TextBuffer textBuffer;
 
@@ -203,6 +203,10 @@ public class Terminal extends Module {
         this.isCursorFlashing = flash;
     }
 
+    public void keyPressed(int code){
+        keysPressed[code] = true;
+    }
+
     public void keyReleased(int code){
         keysPressed[code] = false;
     }
@@ -273,21 +277,6 @@ public class Terminal extends Module {
     public int getWidth(){return width;}
     public int getHeight(){return height;}
 
-    public void keyPressed(int code){
-        keysPressed[code] = true;
-        if(code == 37){
-            color--;
-        }
-        if(code == 39){
-            color++;
-        }
 
-        if(color < 0){
-            color = 0;
-        }
-        if(color > 15){
-            color = 15;
-        }
-    }
 
 }

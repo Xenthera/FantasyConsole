@@ -24,7 +24,7 @@ public class GPU extends Module {
 	
 	public void clear(int color){
 		GPU gpu = this;
-
+		int old = gpu.getColor();
 		gpu.setColor(color);
 		for (int i = 0; i < gpu.canvas.getWidth(); i++) {
 			for (int j = 0; j < gpu.canvas.getHeight(); j++) {
@@ -32,6 +32,7 @@ public class GPU extends Module {
 				gpu._drawPixel(i, j);
 			}
 		}
+		gpu.setColor(old);
 
 	}
 

@@ -50,7 +50,6 @@ public class Computer {//Handle creation of python environment, and boot the bio
             String code = Utility.readFile(path);
             currentProgram = new PythonProgram(this.interpreter, code, path);
             String errMsg = currentProgram.execute();
-            terminal.print("");
             if(!errMsg.equals("")){
                 this.terminal.setTextColor(13);
                 this.terminal.print(errMsg);
@@ -74,6 +73,7 @@ public class Computer {//Handle creation of python environment, and boot the bio
         this.currentProgram = this.programStack.lastElement();
     }
 
+
     public void draw(GPU g, float delta) {
 
         if(this.programStack.size() == 0){
@@ -84,8 +84,14 @@ public class Computer {//Handle creation of python environment, and boot the bio
         prg.draw();
     }
     public void keyPressed(int code) {
+        if(terminal.isKeyDown(17) && code == 67){
+            this.exitProgram();
+        }
+
+
+        this.terminal.keyPressed(code);
         if(this.programStack.size() > 0){
-            this.programStack.lastElement().keyPressed(code); //TODO: Idk if this will be permanent... gotta figure out what to do here
+            this.programStack.lastElement().keyPressed(code);
         }
 
     }

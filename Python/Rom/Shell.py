@@ -28,8 +28,7 @@ GPU.clear(0)
 
 def draw():
     terminal.setTextColor(textColor)
-    if not drawMode:
-        terminal.draw(GPU)
+    terminal.draw(GPU)
 
 def updateInput():
     terminal.clearLine(terminal.getCursY())
@@ -85,10 +84,6 @@ def parse_command(command):
             lastCommand = previousCommands[len(previousCommands) - 1]
 
 
-
-def null(args):
-    terminal.write("")
-
 def cwd(args):
     print("\"" + shell.getCWD() + "\"")
 
@@ -139,10 +134,13 @@ def help(args):
     terminal.write('Welcome to the help command, this is just a test command for now.\n')
 
 def run(args):
+    global currentInput
     if(len(args) < 2):
         print("Usage: run <filename>")
         return
     shell.run("Python/Rom/" + args[1])
+    #terminal.write("\n")
+
 
 def exit(args):
     terminal.setTextColor(14)
